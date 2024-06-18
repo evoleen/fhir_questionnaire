@@ -18,7 +18,7 @@ class QuestionnaireView extends StatefulWidget {
   /// To indicate there is an ongoing loading process
   final bool isLoading;
 
-  /// Indicates what should be the fallback localization if loalce is not
+  /// Indicates what should be the fallback localization if locale is not
   /// supported.
   /// Defaults to English
   final QuestionnaireBaseLocalization? defaultLocalization;
