@@ -5,6 +5,7 @@ import 'package:fhir_questionnaire/src/model/questionnaire_item_bundle.dart';
 import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_base_localization.dart';
 import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_localization.dart';
 import 'package:fhir_questionnaire/src/presentation/utils/flutter_view_utils.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_builder/submit_result.dart';
 import 'package:flutter/widgets.dart';
 
 class QuestionnaireController
@@ -15,6 +16,7 @@ class QuestionnaireController
     this.localizations,
     this.defaultLocalization,
     this.locale,
+    this.onSubmit,
   }) : super(
           QuestionnaireControllerData(
             itemBundles: QuestionnaireLogic.buildQuestionnaireItems(
@@ -36,6 +38,9 @@ class QuestionnaireController
     );
   }
 
+  /// Get the QuestionnaireResponse once the user taps on Submit button.
+  final ValueChanged<SubmitResult>? onSubmit;
+
   final Questionnaire questionnaire;
 
   /// Indicates what should be the fallback localization if locale is not
@@ -55,6 +60,46 @@ class QuestionnaireController
   /// so the logic of loading an Attachment is handled outside of the logic
   /// of QuestionnaireView
   final Future<Attachment?> Function()? onAttachmentLoaded;
+
+  /// tries to validate the answers to each questionnaire item if there is
+  /// any invalid answers they will be returned otherwise null will be returned.
+  ///
+  /// the result is a Map<int, QuestionnaireItemBundle> a questionnaire item bundle
+  /// is mapped by its index value that it is indexed in all bundleItems that exists
+  /// in this [QuestionnaireController].
+  ///
+  /// if [notify] is set to true the questionnaire item widgets will be notified
+  /// and updated with error message.
+  Map<int, QuestionnaireItemBundle> validate({bool notify = true}) {
+    final map = <int, QuestionnaireItemBundle>{};
+
+    for (var i = 0; i < value.itemBundles.length; i++) {
+      final questionnaireItemBundle = value.itemBundles[i];
+      if (!questionnaireItemBundle.controller.validate(notify: notify)) {
+        map[i] = questionnaireItemBundle;
+      }
+    }
+
+    return map;
+  }
+
+  SubmitResult submit() {
+    final SubmitResult submitResult;
+    final invalidItems = validate();
+
+    if (invalidItems.isEmpty) {
+      final questionnaireResponse = QuestionnaireLogic.generateResponse(
+        questionnaire: questionnaire,
+        itemBundles: value.itemBundles,
+      );
+
+      submitResult = SubmitResult.questionnaireResponse(questionnaireResponse);
+    } else {
+      submitResult = SubmitResult.invalidItems(invalidItems);
+    }
+
+    return submitResult;
+  }
 }
 
 class QuestionnaireControllerData {
