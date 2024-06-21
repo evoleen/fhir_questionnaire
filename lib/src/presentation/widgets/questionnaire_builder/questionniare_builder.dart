@@ -28,10 +28,10 @@ class _State extends State<QuestionnaireBuilder> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: widget.controller,
-      builder: (context, questionnaireProviderData, child) {
+      builder: (context, questionnaireControllerData, child) {
         return widget.builder(
           context: context,
-          itemBundles: questionnaireProviderData.itemBundles,
+          itemBundles: questionnaireControllerData.itemBundles,
         );
       },
       child: widget.child,
