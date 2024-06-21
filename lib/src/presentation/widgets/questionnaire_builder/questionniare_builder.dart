@@ -26,12 +26,12 @@ class QuestionnaireBuilder extends StatefulWidget {
 class _State extends State<QuestionnaireBuilder> {
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: widget.controller,
-      builder: (context, questionnaireControllerData, child) {
+    return ListenableBuilder(
+      listenable: widget.controller,
+      builder: (context, child) {
         return widget.builder(
           context: context,
-          itemBundles: questionnaireControllerData.itemBundles,
+          itemBundles: widget.controller.itemBundles,
         );
       },
       child: widget.child,

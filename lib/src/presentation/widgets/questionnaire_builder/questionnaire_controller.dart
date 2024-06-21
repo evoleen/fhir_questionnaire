@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/src/logic/questionnaire_logic.dart';
 import 'package:fhir_questionnaire/src/model/questionnaire_item_bundle.dart';
@@ -8,8 +7,7 @@ import 'package:fhir_questionnaire/src/presentation/utils/flutter_view_utils.dar
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_builder/submit_result.dart';
 import 'package:flutter/widgets.dart';
 
-class QuestionnaireController
-    extends ValueNotifier<QuestionnaireControllerData> {
+class QuestionnaireController extends ChangeNotifier {
   QuestionnaireController({
     required this.questionnaire,
     this.onAttachmentLoaded,
@@ -17,14 +15,7 @@ class QuestionnaireController
     this.defaultLocalization,
     this.locale,
     this.onSubmit,
-  }) : super(
-          QuestionnaireControllerData(
-            itemBundles: QuestionnaireLogic.buildQuestionnaireItems(
-              questionnaire.item,
-              onAttachmentLoaded: onAttachmentLoaded,
-            ),
-          ),
-        ) {
+  }) : itemBundles = [] {
     String? locale;
     try {
       locale = locale ??
@@ -36,7 +27,11 @@ class QuestionnaireController
       localizations: localizations,
       locale: locale,
     );
+
+    notifyListeners();
   }
+
+  final List<QuestionnaireItemBundle> itemBundles;
 
   /// Get the QuestionnaireResponse once the user taps on Submit button.
   final ValueChanged<SubmitResult>? onSubmit;
@@ -73,13 +68,14 @@ class QuestionnaireController
   Map<int, QuestionnaireItemBundle> validate({bool notify = true}) {
     final map = <int, QuestionnaireItemBundle>{};
 
-    for (var i = 0; i < value.itemBundles.length; i++) {
-      final questionnaireItemBundle = value.itemBundles[i];
+    for (var i = 0; i < itemBundles.length; i++) {
+      final questionnaireItemBundle = itemBundles[i];
       if (!questionnaireItemBundle.controller.validate(notify: notify)) {
         map[i] = questionnaireItemBundle;
       }
     }
 
+    notifyListeners();
     return map;
   }
 
@@ -90,7 +86,7 @@ class QuestionnaireController
     if (invalidItems.isEmpty) {
       final questionnaireResponse = QuestionnaireLogic.generateResponse(
         questionnaire: questionnaire,
-        itemBundles: value.itemBundles,
+        itemBundles: itemBundles,
       );
 
       submitResult = SubmitResult.questionnaireResponse(questionnaireResponse);
@@ -98,29 +94,7 @@ class QuestionnaireController
       submitResult = SubmitResult.invalidItems(invalidItems);
     }
 
+    notifyListeners();
     return submitResult;
   }
-}
-
-class QuestionnaireControllerData {
-  QuestionnaireControllerData({
-    required this.itemBundles,
-  });
-
-  final List<QuestionnaireItemBundle> itemBundles;
-
-  QuestionnaireControllerData copyWith({
-    List<QuestionnaireItemBundle>? itemBundles,
-  }) =>
-      QuestionnaireControllerData(
-        itemBundles: itemBundles ?? this.itemBundles,
-      );
-
-  @override
-  bool operator ==(Object other) =>
-      other is QuestionnaireControllerData &&
-      itemBundles.equals(other.itemBundles);
-
-  @override
-  int get hashCode => Object.hash(itemBundles, 10);
 }
