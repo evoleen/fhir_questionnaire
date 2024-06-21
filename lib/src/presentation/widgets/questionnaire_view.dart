@@ -137,7 +137,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   }
 
   Future<void> buildQuestionnaireItems() async {
-    itemBundles = await QuestionnaireController.buildQuestionnaireItems(
+    itemBundles = QuestionnaireLogic.buildQuestionnaireItems(
       questionnaire.item,
       onAttachmentLoaded: widget.onAttachmentLoaded,
     );
@@ -251,7 +251,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
 
   void onSubmit() {
     if (validate()) {
-      final questionnaireResponse = QuestionnaireController.generateResponse(
+      final questionnaireResponse = QuestionnaireLogic.generateResponse(
           questionnaire: questionnaire, itemBundles: itemBundles);
       // if (kDebugMode) {
       //   var prettyString = const JsonEncoder.withIndent('  ')

@@ -3,7 +3,7 @@ import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/foundation.dart';
 
-class QuestionnaireController {
+class QuestionnaireLogic {
   static QuestionnaireItemView? _buildChoiceItemView(
       {required QuestionnaireItem item,
       QuestionnaireItemEnableWhenController? enableWhenController}) {
@@ -84,10 +84,10 @@ class QuestionnaireController {
     return controller;
   }
 
-  static Future<List<QuestionnaireItemBundle>> buildQuestionnaireItems(
+  static List<QuestionnaireItemBundle> buildQuestionnaireItems(
     List<QuestionnaireItem>? questionnaireItems, {
     Future<Attachment?> Function()? onAttachmentLoaded,
-  }) async {
+  }) {
     List<QuestionnaireItemBundle> itemBundles = [];
 
     try {
@@ -110,7 +110,7 @@ class QuestionnaireController {
               controller: groupTitleItemView.controller,
               view: groupTitleItemView,
             ),
-            ...(await buildQuestionnaireItems(childItems)),
+            ...(buildQuestionnaireItems(childItems)),
           ]);
         } else {
           final itemView = switch (itemType) {
