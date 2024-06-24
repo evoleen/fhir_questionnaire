@@ -1,4 +1,4 @@
-import 'package:example/pages/examples/questionnaire_builder_demo.dart';
+import 'package:example/pages/examples/questionnaire_builder/questionnaire_builder_demo.dart';
 import 'package:example/pages/examples/questionnaire_view_demo.dart';
 import 'package:flutter/material.dart';
 

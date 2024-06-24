@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:example/pages/examples/questionnaire_builder/custom_radio_button_questionnaire_item_view.dart';
 import 'package:example/questionnaire_samples.dart';
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
@@ -21,6 +22,21 @@ class _QuestionnaireBuilderDemoState extends State<QuestionnaireBuilderDemo> {
     _questionnaireController = QuestionnaireController(
       questionnaire:
           Questionnaire.fromJsonString(QuestionnaireSamples.sampleWithGroups),
+      overrideQuestionnaireItemMapper: (
+        item,
+        onAttachmentLoaded,
+        enableWhenController,
+      ) {
+        print('custom map function called');
+        print('item type: ${item.type.value}');
+        if (item.type.value == 'choice') {
+          return CustomQuestionnaireRadioButtonChoiceItemView(
+            item: item,
+            enableWhenController: enableWhenController,
+          );
+        }
+        return null;
+      },
     );
   }
 

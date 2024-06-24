@@ -127,7 +127,11 @@ class QuestionnaireLogic {
               controller: groupTitleItemView.controller,
               view: groupTitleItemView,
             ),
-            ...(buildQuestionnaireItems(childItems)),
+            ...(buildQuestionnaireItems(
+              childItems,
+              onAttachmentLoaded: onAttachmentLoaded,
+              overrideQuestionnaireItemMapper: overrideQuestionnaireItemMapper,
+            )),
           ]);
         } else {
           final itemView = switch (itemType) {
