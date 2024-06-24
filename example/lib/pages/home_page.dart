@@ -1,5 +1,5 @@
-import 'package:example/pages/examples/questionnaire_builder_page.dart';
-import 'package:example/pages/examples/questionnaire_view_page.dart';
+import 'package:example/pages/examples/questionnaire_builder_demo.dart';
+import 'package:example/pages/examples/questionnaire_view_demo.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => const QuestionnaireViewPage(),
+                    builder: (context) => const QuestionnaireViewDemo(),
                   ),
                 );
               },
@@ -27,7 +27,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => const QuestionnaireBuilderPage(),
+                    builder: (context) => const QuestionnaireBuilderDemo(),
                   ),
                 );
               },

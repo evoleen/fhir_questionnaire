@@ -7,14 +7,14 @@ import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
 
-class QuestionnaireViewPage extends StatefulWidget {
-  const QuestionnaireViewPage({super.key});
+class QuestionnaireViewDemo extends StatefulWidget {
+  const QuestionnaireViewDemo({super.key});
 
   @override
-  State<QuestionnaireViewPage> createState() => _QuestionnaireViewPageState();
+  State<QuestionnaireViewDemo> createState() => _QuestionnaireViewDemoState();
 }
 
-class _QuestionnaireViewPageState extends State<QuestionnaireViewPage> {
+class _QuestionnaireViewDemoState extends State<QuestionnaireViewDemo> {
   final List<({String name, String? value})> locales = [
     (name: 'System default', value: null),
     (name: 'English', value: 'en'),

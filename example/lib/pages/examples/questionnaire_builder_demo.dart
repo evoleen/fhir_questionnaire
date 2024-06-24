@@ -4,15 +4,15 @@ import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
 
-class QuestionnaireBuilderPage extends StatefulWidget {
-  const QuestionnaireBuilderPage({super.key});
+class QuestionnaireBuilderDemo extends StatefulWidget {
+  const QuestionnaireBuilderDemo({super.key});
 
   @override
-  State<QuestionnaireBuilderPage> createState() =>
-      _QuestionnaireBuilderPageState();
+  State<QuestionnaireBuilderDemo> createState() =>
+      _QuestionnaireBuilderDemoState();
 }
 
-class _QuestionnaireBuilderPageState extends State<QuestionnaireBuilderPage> {
+class _QuestionnaireBuilderDemoState extends State<QuestionnaireBuilderDemo> {
   late QuestionnaireController _questionnaireController;
 
   @override
@@ -31,7 +31,6 @@ class _QuestionnaireBuilderPageState extends State<QuestionnaireBuilderPage> {
       body: QuestionnaireBuilder(
         controller: _questionnaireController,
         builder: (context, items) {
-
           return ListView(
             padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
             children: [
