@@ -1,10 +1,12 @@
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/src/logic/questionnaire_logic.dart';
 import 'package:fhir_questionnaire/src/model/questionnaire_item_bundle.dart';
+import 'package:fhir_questionnaire/src/model/questionnaire_item_enable_when_controller.dart';
 import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_base_localization.dart';
 import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_localization.dart';
 import 'package:fhir_questionnaire/src/presentation/utils/flutter_view_utils.dart';
 import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_builder/submit_result.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/base/questionnaire_item_view.dart';
 import 'package:flutter/widgets.dart';
 
 class QuestionnaireController extends ChangeNotifier {
@@ -15,9 +17,11 @@ class QuestionnaireController extends ChangeNotifier {
     this.defaultLocalization,
     this.locale,
     this.onSubmit,
+    this.overrideQuestionnaireItemMapper,
   }) : itemBundles = QuestionnaireLogic.buildQuestionnaireItems(
           questionnaire.item,
           onAttachmentLoaded: onAttachmentLoaded,
+          overrideQuestionnaireItemMapper: overrideQuestionnaireItemMapper,
         ) {
     String? locale;
     try {
@@ -33,6 +37,12 @@ class QuestionnaireController extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  QuestionnaireItemView? Function(
+    QuestionnaireItem questionnaireItem,
+    Future<Attachment?> Function()? onAttachmentLoaded,
+    QuestionnaireItemEnableWhenController? enableWhenController,
+  )? overrideQuestionnaireItemMapper;
 
   final List<QuestionnaireItemBundle> itemBundles;
 

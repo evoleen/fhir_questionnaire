@@ -87,6 +87,11 @@ class QuestionnaireLogic {
   static List<QuestionnaireItemBundle> buildQuestionnaireItems(
     List<QuestionnaireItem>? questionnaireItems, {
     Future<Attachment?> Function()? onAttachmentLoaded,
+    QuestionnaireItemView? Function(
+      QuestionnaireItem questionnaireItem,
+      Future<Attachment?> Function()? onAttachmentLoaded,
+      QuestionnaireItemEnableWhenController? enableWhenController,
+    )? overrideQuestionnaireItemMapper,
   }) {
     List<QuestionnaireItemBundle> itemBundles = [];
 
@@ -96,7 +101,19 @@ class QuestionnaireLogic {
             getEnableWhenController(item: item, itemBundles: itemBundles);
         final itemType = QuestionnaireItemType.valueOf(item.type.value);
 
-        if (itemType == QuestionnaireItemType.group) {
+        final customItemView = overrideQuestionnaireItemMapper?.call(
+          item,
+          onAttachmentLoaded,
+          enableWhenController,
+        );
+
+        if (customItemView != null) {
+          itemBundles.add(QuestionnaireItemBundle(
+            item: item,
+            view: customItemView,
+            controller: customItemView.controller,
+          ));
+        } else if (itemType == QuestionnaireItemType.group) {
           final childItems = item.item ?? [];
           final groupTitleItemView = QuestionnaireDisplayItemView(
             item: item,
