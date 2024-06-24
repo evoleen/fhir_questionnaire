@@ -37,6 +37,7 @@ dependencies:
   image_picker: ^1.0.7
   file_picker: ^8.0.0+1
   crypto: ^3.0.3
+  collection: ^1.18.0
 
 
 dev_dependencies:

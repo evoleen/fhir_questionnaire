@@ -15,7 +15,10 @@ class QuestionnaireController extends ChangeNotifier {
     this.defaultLocalization,
     this.locale,
     this.onSubmit,
-  }) : itemBundles = [] {
+  }) : itemBundles = QuestionnaireLogic.buildQuestionnaireItems(
+          questionnaire.item,
+          onAttachmentLoaded: onAttachmentLoaded,
+        ) {
     String? locale;
     try {
       locale = locale ??
