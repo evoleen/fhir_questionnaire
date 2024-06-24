@@ -7,10 +7,10 @@ class QuestionnaireBuilder extends StatefulWidget {
 
   final QuestionnaireController controller;
 
-  final Widget Function({
-    required BuildContext context,
+  final Widget Function(
+    BuildContext context,
     List<QuestionnaireItemBundle> itemBundles,
-  }) builder;
+  ) builder;
 
   const QuestionnaireBuilder({
     super.key,
@@ -29,10 +29,7 @@ class _State extends State<QuestionnaireBuilder> {
     return ListenableBuilder(
       listenable: widget.controller,
       builder: (context, child) {
-        return widget.builder(
-          context: context,
-          itemBundles: widget.controller.itemBundles,
-        );
+        return widget.builder(context, widget.controller.itemBundles);
       },
       child: widget.child,
     );
