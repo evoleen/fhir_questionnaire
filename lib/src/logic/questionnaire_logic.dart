@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
+import 'package:fhir_questionnaire/src/presentation/widgets/questionnaire_item/group/questionnaire_group_title_view.dart';
 import 'package:flutter/foundation.dart';
 
 class QuestionnaireLogic {
@@ -117,7 +118,7 @@ class QuestionnaireLogic {
           ));
         } else if (itemType == QuestionnaireItemType.group) {
           final childItems = item.item ?? [];
-          final groupTitleItemView = QuestionnaireDisplayItemView(
+          final groupTitleItemView = QuestionnaireGroupItemTitleView(
             item: item,
             enableWhenController: enableWhenController,
           );
