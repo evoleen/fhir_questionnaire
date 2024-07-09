@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:collection/collection.dart';
 import 'package:example/pages/examples/questionnaire_builder/custom_radio_button_questionnaire_item_view.dart';
 import 'package:example/questionnaire_samples.dart';
@@ -48,7 +50,7 @@ class _QuestionnaireBuilderDemoState extends State<QuestionnaireBuilderDemo> {
         controller: _questionnaireController,
         builder: (context, items) {
           for (final item in items) {
-            print('groupId: ${item.groupId} - id: ${item.item.linkId}');
+            print('uid: ${item.uid}');
           }
 
           return ListView(
