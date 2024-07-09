@@ -47,6 +47,10 @@ class _QuestionnaireBuilderDemoState extends State<QuestionnaireBuilderDemo> {
       body: QuestionnaireBuilder(
         controller: _questionnaireController,
         builder: (context, items) {
+          for (final item in items) {
+            print('groupId: ${item.groupId} - id: ${item.item.linkId}');
+          }
+
           return ListView(
             padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 24),
             children: [

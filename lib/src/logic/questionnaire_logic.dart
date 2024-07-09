@@ -87,6 +87,7 @@ class QuestionnaireLogic {
   static List<QuestionnaireItemBundle> buildQuestionnaireItems(
     List<QuestionnaireItem>? questionnaireItems, {
     Future<Attachment?> Function()? onAttachmentLoaded,
+    String? groupId,
     QuestionnaireItemView? Function(
       QuestionnaireItem questionnaireItem,
       Future<Attachment?> Function()? onAttachmentLoaded,
@@ -112,6 +113,7 @@ class QuestionnaireLogic {
             item: item,
             view: customItemView,
             controller: customItemView.controller,
+            groupId: groupId,
           ));
         } else if (itemType == QuestionnaireItemType.group) {
           final childItems = item.item ?? [];
@@ -120,18 +122,22 @@ class QuestionnaireLogic {
             enableWhenController: enableWhenController,
           );
 
+          final groupIdForChildren =
+              '${groupId != null ? "$groupId/" : ""}${item.linkId}';
           itemBundles.addAll([
             /// title of the group shown as a DisplayItemView
             QuestionnaireItemBundle(
               item: item,
               controller: groupTitleItemView.controller,
               view: groupTitleItemView,
+              groupId: groupIdForChildren,
             ),
-            ...(buildQuestionnaireItems(
+            ...buildQuestionnaireItems(
               childItems,
               onAttachmentLoaded: onAttachmentLoaded,
               overrideQuestionnaireItemMapper: overrideQuestionnaireItemMapper,
-            )),
+              groupId: groupIdForChildren,
+            ),
           ]);
         } else {
           final itemView = switch (itemType) {
@@ -197,6 +203,7 @@ class QuestionnaireLogic {
               item: item,
               view: itemView,
               controller: itemView.controller,
+              groupId: groupId,
             ));
           }
         }

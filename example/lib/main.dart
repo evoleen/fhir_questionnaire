@@ -25,9 +25,10 @@ class MyApp extends StatelessWidget {
           title: 'FHIR Questionnaire Demo',
           scrollBehavior: const CustomScrollBehavior(),
           theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-              useMaterial3: true,
-              inputDecorationTheme: snapshot.data),
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+            useMaterial3: true,
+            inputDecorationTheme: snapshot.data,
+          ),
           home: const HomePage(),
         );
       },
