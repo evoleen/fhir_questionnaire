@@ -77,6 +77,7 @@ class QuestionnaireLogic {
       }
       if (list.isNotEmpty) {
         controller = QuestionnaireItemEnableWhenController(
+          item: item,
           enableWhenBundleList: list,
           behavior: item.enableBehavior,
         );

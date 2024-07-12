@@ -3,6 +3,7 @@ import 'package:fhir/r4.dart';
 import 'package:flutter/cupertino.dart';
 
 class QuestionnaireItemEnableWhenController {
+  final QuestionnaireItem item;
   late final List<QuestionnaireItemEnableWhenBundle> _enableWhenBundleList;
   late final QuestionnaireEnableWhenBehavior _behavior;
   ValueChanged<bool>? _onEnabledChanged;
@@ -10,6 +11,7 @@ class QuestionnaireItemEnableWhenController {
   QuestionnaireItemEnableWhenController({
     required List<QuestionnaireItemEnableWhenBundle>? enableWhenBundleList,
     required FhirCode? behavior,
+    required this.item,
   })  : _enableWhenBundleList = enableWhenBundleList ?? [],
         _behavior = QuestionnaireEnableWhenBehavior.valueOf(behavior?.value) ??
             QuestionnaireEnableWhenBehavior.defaultValue;
@@ -30,6 +32,7 @@ class QuestionnaireItemEnableWhenController {
   }
 
   bool _checkIfEnabled() {
+
     bool enabled = _behavior.init();
     for (final enableWhenBundle in _enableWhenBundleList) {
       final controller = enableWhenBundle.controller;
