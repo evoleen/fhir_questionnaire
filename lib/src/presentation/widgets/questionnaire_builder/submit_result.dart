@@ -16,7 +16,7 @@ class SubmitResult {
   QuestionnaireResponse get questionnaireResponse {
     if (_questionnaireResponse == null) {
       throw Exception(
-        'there is no QuestionnaireResponse available and please call '
+        'there is no QuestionnaireResponse available, Please call '
         'hasQuestionnaireResponse to check first before calling questionnaireResponse getter method',
       );
     }
@@ -32,8 +32,8 @@ class SubmitResult {
   Map<int, QuestionnaireItemBundle> get invalidItems {
     if (_invalidItems == null) {
       throw Exception(
-        'there is no invalid items available and please call '
-        'hasInvalidItems first check if there are any before calling invalidItems getter method',
+        'there is no invalid items available, Please call '
+        'hasInvalidItems first to check if there are any, before calling invalidItems getter method',
       );
     }
     return _invalidItems;

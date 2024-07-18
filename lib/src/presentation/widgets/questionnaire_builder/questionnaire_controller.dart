@@ -69,20 +69,45 @@ class QuestionnaireController extends ChangeNotifier {
   /// of QuestionnaireView
   final Future<Attachment?> Function()? onAttachmentLoaded;
 
-  /// tries to validate the answers to each questionnaire item if there is
-  /// any invalid answers they will be returned otherwise null will be returned.
+  /// Tries to validate all answers to questionnaire items if there is
+  /// any invalid answers they will be returned otherwise an empty map will be returned.
   ///
-  /// the result is a Map<int, QuestionnaireItemBundle> a questionnaire item bundle
+  /// The result is a Map<int, QuestionnaireItemBundle> a questionnaire item bundle
   /// is mapped by its index value that it is indexed in all bundleItems that exists
   /// in this [QuestionnaireController].
   ///
-  /// if [notify] is set to true the questionnaire item widgets will be notified
+  /// If [notify] is set to true the questionnaire item widgets will be notified
   /// and updated with error message.
   Map<int, QuestionnaireItemBundle> validate({bool notify = true}) {
     final map = <int, QuestionnaireItemBundle>{};
 
     for (var i = 0; i < itemBundles.length; i++) {
       final questionnaireItemBundle = itemBundles[i];
+      if (!questionnaireItemBundle.controller.validate(notify: notify)) {
+        map[i] = questionnaireItemBundle;
+      }
+    }
+
+    notifyListeners();
+    return map;
+  }
+
+  /// Tries to validate the answers to each questionnaire item in [questionnaireItemBundles]
+  /// if there is any invalid answers they will be returned otherwise an empty map will be returned.
+  ///
+  /// The result is a Map<int, QuestionnaireItemBundle> a questionnaire item bundle
+  /// is mapped by its index value that it is its position index in given [questionnaireItemBundles].
+  ///
+  /// If [notify] is set to true the questionnaire item widgets will be notified
+  /// and updated with error message.
+  Map<int, QuestionnaireItemBundle> validateItems({
+    required List<QuestionnaireItemBundle> questionnaireItemBundles,
+    bool notify = true,
+  }) {
+    final map = <int, QuestionnaireItemBundle>{};
+
+    for (var i = 0; i < questionnaireItemBundles.length; i++) {
+      final questionnaireItemBundle = questionnaireItemBundles[i];
       if (!questionnaireItemBundle.controller.validate(notify: notify)) {
         map[i] = questionnaireItemBundle;
       }
