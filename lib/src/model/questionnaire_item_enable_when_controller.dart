@@ -19,7 +19,7 @@ class QuestionnaireItemEnableWhenController {
   bool init({required ValueChanged<bool> onEnabledChangedListener}) {
     _onEnabledChanged = onEnabledChangedListener;
     _addListeners();
-    return _checkIfEnabled();
+    return checkIfEnabled();
   }
 
   void dispose() {
@@ -28,11 +28,10 @@ class QuestionnaireItemEnableWhenController {
   }
 
   void _onControllerChange() {
-    _checkIfEnabled();
+    checkIfEnabled();
   }
 
-  bool _checkIfEnabled() {
-
+  bool checkIfEnabled({bool notify = true}) {
     bool enabled = _behavior.init();
     for (final enableWhenBundle in _enableWhenBundleList) {
       final controller = enableWhenBundle.controller;
@@ -118,7 +117,9 @@ class QuestionnaireItemEnableWhenController {
         break;
       }
     }
-    _onEnabledChanged?.call(enabled);
+    if (notify) {
+      _onEnabledChanged?.call(enabled);
+    }
     return enabled;
   }
 

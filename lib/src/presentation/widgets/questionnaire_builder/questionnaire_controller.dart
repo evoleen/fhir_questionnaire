@@ -78,19 +78,8 @@ class QuestionnaireController extends ChangeNotifier {
   ///
   /// If [notify] is set to true the questionnaire item widgets will be notified
   /// and updated with error message.
-  Map<int, QuestionnaireItemBundle> validate({bool notify = true}) {
-    final map = <int, QuestionnaireItemBundle>{};
-
-    for (var i = 0; i < itemBundles.length; i++) {
-      final questionnaireItemBundle = itemBundles[i];
-      if (!questionnaireItemBundle.controller.validate(notify: notify)) {
-        map[i] = questionnaireItemBundle;
-      }
-    }
-
-    notifyListeners();
-    return map;
-  }
+  Map<int, QuestionnaireItemBundle> validate({bool notify = true}) =>
+      validateItems(questionnaireItemBundles: itemBundles, notify: notify);
 
   /// Tries to validate the answers to each questionnaire item in [questionnaireItemBundles]
   /// if there is any invalid answers they will be returned otherwise an empty map will be returned.
@@ -108,7 +97,13 @@ class QuestionnaireController extends ChangeNotifier {
 
     for (var i = 0; i < questionnaireItemBundles.length; i++) {
       final questionnaireItemBundle = questionnaireItemBundles[i];
-      if (!questionnaireItemBundle.controller.validate(notify: notify)) {
+      final enableWhenController =
+          questionnaireItemBundle.view.enableWhenController;
+      final isEnabled = enableWhenController == null ||
+          enableWhenController.checkIfEnabled(notify: false) == true;
+
+      if (isEnabled &&
+          !questionnaireItemBundle.controller.validate(notify: notify)) {
         map[i] = questionnaireItemBundle;
       }
     }
