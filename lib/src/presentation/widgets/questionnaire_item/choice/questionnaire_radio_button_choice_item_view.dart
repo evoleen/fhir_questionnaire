@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 /// Created by luis901101 on 3/9/24.
 class QuestionnaireRadioButtonChoiceItemView
     extends QuestionnaireSingleChoiceItemView {
-  QuestionnaireRadioButtonChoiceItemView(
-      {super.key,
-      super.controller,
-      required super.item,
-      super.isOpen,
-      super.enableWhenController});
+  QuestionnaireRadioButtonChoiceItemView({
+    super.key,
+    super.controller,
+    required super.item,
+    super.isOpen,
+    super.enableWhenController,
+  });
 
   @override
   State createState() => QuestionnaireRadioButtonChoiceItemViewState();

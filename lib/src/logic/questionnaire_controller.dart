@@ -5,6 +5,16 @@ import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/foundation.dart';
 
 class QuestionnaireController {
+  QuestionnaireController();
+
+  /// Allows modification on a [QuestionnaireResponseItem] when generating
+  /// the [QuestionnaireResponse] object. This callback would be a great
+  /// to add extensions on a [QuestionnaireResponseItem].
+  QuestionnaireResponseItem Function(
+    QuestionnaireItemBundle questionnaireItemBundle,
+    QuestionnaireResponseItem item,
+  )? questionnaireResponseItemMapper;
+
   QuestionnaireItemView? buildChoiceItemView(
       {required QuestionnaireItem item,
       QuestionnaireItemEnableWhenController? enableWhenController}) {
@@ -626,13 +636,19 @@ class QuestionnaireController {
         default:
       }
 
-      items.add(QuestionnaireResponseItem(
+      var item = QuestionnaireResponseItem(
         linkId: itemBundle.item.linkId,
         definition: itemBundle.item.definition,
         text: itemBundle.item.text,
         answer: answers.isEmpty ? null : answers,
         extension_: itemBundle.item.extension_,
-      ));
+      );
+
+      if (questionnaireResponseItemMapper != null) {
+        item = questionnaireResponseItemMapper!.call(itemBundle, item);
+      }
+
+      items.add(item);
     }
 
     return items;
