@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 class QuestionnaireController {
   QuestionnaireController({
     this.questionnaireResponseItemMapper,
+    this.overrideQuestionnaireItemMapper,
   });
 
   /// Allows modification on a [QuestionnaireResponseItem] when generating
@@ -16,6 +17,12 @@ class QuestionnaireController {
     QuestionnaireItemBundle questionnaireItemBundle,
     QuestionnaireResponseItem item,
   )? questionnaireResponseItemMapper;
+
+  QuestionnaireItemView? Function(
+    QuestionnaireItem questionnaireItem,
+    Future<Attachment?> Function()? onAttachmentLoaded,
+    QuestionnaireItemEnableWhenController? enableWhenController,
+  )? overrideQuestionnaireItemMapper;
 
   QuestionnaireItemView? buildChoiceItemView(
       {required QuestionnaireItem item,
