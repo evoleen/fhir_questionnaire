@@ -562,11 +562,14 @@ class QuestionnaireController {
     return updatedQuestionnaireResponse;
   }
 
-  List<QuestionnaireResponseItem> generateItemResponses(
-      {required List<QuestionnaireItemBundle> itemBundles}) {
+  List<QuestionnaireResponseItem> generateItemResponses({
+    required List<QuestionnaireItemBundle> itemBundles,
+  }) {
     List<QuestionnaireResponseItem> items = [];
     for (final itemBundle in itemBundles) {
+      List<QuestionnaireResponseItem>? childItems;
       List<QuestionnaireResponseAnswer>? answers;
+
       final itemType =
           QuestionnaireItemType.valueOf(itemBundle.item.type.value);
       switch (itemType) {
@@ -662,10 +665,10 @@ class QuestionnaireController {
         /// The answers of a group are the answers of the children
         case QuestionnaireItemType.group:
           if (itemBundle.children.isNotEmpty) {
-            items.addAll(
-                generateItemResponses(itemBundles: itemBundle.children!));
+            childItems =
+                generateItemResponses(itemBundles: itemBundle.children!);
           }
-          continue;
+          break;
         default:
       }
 
@@ -675,6 +678,7 @@ class QuestionnaireController {
         text: itemBundle.item.text,
         answer: answers.isEmpty ? null : answers,
         extension_: itemBundle.item.extension_,
+        item: childItems,
       );
 
       if (questionnaireResponseItemMapper != null) {
