@@ -717,7 +717,7 @@ class QuestionnaireController {
   /// Takes a list [QuestionnaireItemBundle] flattens it by extracting all the
   /// child items and putting them all in one list.
   ///
-  /// Can be used for searching/filtering a list of [QuestionnaireItemBundle] objects.
+  /// Can be used for searching/filtering a list of [QuestionnaireItemBundle] objects
   List<QuestionnaireItemBundle> _flattenItemBundles(
     List<QuestionnaireItemBundle> itemBundles,
   ) {
