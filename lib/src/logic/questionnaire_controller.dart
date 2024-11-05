@@ -109,7 +109,6 @@ class QuestionnaireController {
       }
     }
 
-    print('SSS ${item.prefix}: enableWhenController: $controller');
     return controller;
   }
 
