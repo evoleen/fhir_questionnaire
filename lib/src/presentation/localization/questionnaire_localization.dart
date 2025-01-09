@@ -30,4 +30,5 @@ class QuestionnaireLocalization {
       localization = _localizationsMap[locale] ?? _defaultLocalization;
     }
   }
+  
 }

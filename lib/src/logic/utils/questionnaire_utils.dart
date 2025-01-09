@@ -1,11 +1,26 @@
 import 'package:fhir/r4.dart';
+import 'package:fhir_questionnaire/fhir_questionnaire.dart';
+import 'package:fhir_questionnaire/src/logic/utils/fhir_extensions_utils.dart';
 
 extension CodeableConceptUtils on CodeableConcept {
-  String? get title => text ?? coding?.firstOrNull?.title;
+  String? get title {
+    final locale = QuestionnaireLocalization.instance.localization.locale;
+
+    final textLocalized =
+        textElement?.extension_?.translationForLocale(locale) ?? text;
+
+    return textLocalized ?? coding?.firstOrNull?.title;
+  }
 }
 
 extension CodingUtils on Coding {
-  String? get title => display ?? code?.value ?? system?.value?.toString();
+  String? get title {
+    final locale = QuestionnaireLocalization.instance.localization.locale;
+    final displayLocalized =
+        displayElement?.extension_?.translationForLocale(locale) ?? display;
+
+    return displayLocalized ?? code?.value ?? system?.value?.toString();
+  }
 }
 
 extension FhirDateUtils on FhirDate {
@@ -23,7 +38,13 @@ extension FhirDateTimeUtils on FhirDateTime {
 }
 
 extension QuestionnaireItemUtils on QuestionnaireItem {
-  String? get title => text ?? code?.firstOrNull?.title;
+  String? get title {
+    final locale = QuestionnaireLocalization.instance.localization.locale;
+
+    final textLocalized =
+        textElement?.extension_?.translationForLocale(locale) ?? text;
+    return textLocalized ?? code?.firstOrNull?.title;
+  }
 }
 
 extension QuestionnaireUtils on Questionnaire {
