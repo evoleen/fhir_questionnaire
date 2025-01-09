@@ -51,3 +51,11 @@ extension QuestionnaireUtils on Questionnaire {
   FhirCanonical get asFhirCanonical =>
       FhirCanonical('${R4ResourceType.Questionnaire.name}/$fhirId');
 }
+
+extension QuestionnaireAnswerOptionUtils on QuestionnaireAnswerOption {
+  String? get valueStringLocalized {
+    final locale = QuestionnaireLocalization.instance.localization.locale;
+    return valueStringElement?.extension_?.translationForLocale(locale) ??
+        valueString;
+  }
+}

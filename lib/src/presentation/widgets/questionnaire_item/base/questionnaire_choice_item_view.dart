@@ -37,7 +37,7 @@ abstract class QuestionnaireChoiceItemViewState<
   bool get isOpen => widget.isOpen;
   String valueNameResolver(QuestionnaireAnswerOption value) =>
       value.valueCoding?.title ??
-      value.valueString ??
+      value.valueStringLocalized ??
       value.valueInteger?.toString() ??
       '';
 
