@@ -1,34 +1,32 @@
-import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_base_localization.dart';
-import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_en_localization.dart';
-import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_es_localization.dart';
+import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_localization_data.dart';
+import 'package:flutter/material.dart';
 
-class QuestionnaireLocalization {
-  static final instance = QuestionnaireLocalization();
-  QuestionnaireBaseLocalization localization = QuestionnaireEnLocalization();
-  QuestionnaireBaseLocalization _defaultLocalization =
-      QuestionnaireEnLocalization();
-  final Map<String, QuestionnaireBaseLocalization> _localizationsMap = {
-    'en': QuestionnaireEnLocalization(),
-    'es': QuestionnaireEsLocalization(),
-  };
-  QuestionnaireLocalization();
+class QuestionnaireLocalization extends InheritedWidget {
+  final QuestionnaireLocalizationData data;
 
-  void init({
-    QuestionnaireBaseLocalization? defaultLocalization,
-    List<QuestionnaireBaseLocalization>? localizations,
-    String? locale,
-  }) {
-    if (defaultLocalization != null) {
-      _defaultLocalization = defaultLocalization;
+  const QuestionnaireLocalization({
+    super.key,
+    required this.data,
+    required super.child,
+  });
+
+  static QuestionnaireLocalizationData of(final BuildContext context) {
+    final result = context
+        .dependOnInheritedWidgetOfExactType<QuestionnaireLocalization>()
+        ?.data;
+    if (result == null) {
+      throw Exception(
+        'Could not find an instance of QuestionnaireLocalizationData when called '
+        'QuestionnaireLocalization.of(context) in the widget tree. '
+        'One can be inserted into the widget tree using QuestionnaireLocalization widget',
+      );
     }
-    if (localizations != null) {
-      for (final localization in localizations) {
-        _localizationsMap[localization.locale] = localization;
-      }
-    }
-    if (locale != null) {
-      localization = _localizationsMap[locale] ?? _defaultLocalization;
-    }
+
+    return result;
   }
-  
+
+  @override
+  bool updateShouldNotify(final QuestionnaireLocalization oldWidget) {
+    return oldWidget.data.localization.locale != data.localization.locale;
+  }
 }

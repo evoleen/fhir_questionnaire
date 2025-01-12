@@ -4,7 +4,7 @@ import 'package:fhir_questionnaire/src/logic/utils/fhir_extensions_utils.dart';
 
 extension CodeableConceptUtils on CodeableConcept {
   String? get title {
-    final locale = QuestionnaireLocalization.instance.localization.locale;
+    final locale = QuestionnaireLocalizationData.instance.localization.locale;
 
     final textLocalized =
         textElement?.extension_?.translationForLocale(locale) ?? text;
@@ -15,7 +15,7 @@ extension CodeableConceptUtils on CodeableConcept {
 
 extension CodingUtils on Coding {
   String? get title {
-    final locale = QuestionnaireLocalization.instance.localization.locale;
+    final locale = QuestionnaireLocalizationData.instance.localization.locale;
     final displayLocalized =
         displayElement?.extension_?.translationForLocale(locale) ?? display;
 
@@ -39,7 +39,7 @@ extension FhirDateTimeUtils on FhirDateTime {
 
 extension QuestionnaireItemUtils on QuestionnaireItem {
   String? get title {
-    final locale = QuestionnaireLocalization.instance.localization.locale;
+    final locale = QuestionnaireLocalizationData.instance.localization.locale;
 
     final textLocalized =
         textElement?.extension_?.translationForLocale(locale) ?? text;
@@ -54,7 +54,7 @@ extension QuestionnaireUtils on Questionnaire {
 
 extension QuestionnaireAnswerOptionUtils on QuestionnaireAnswerOption {
   String? get valueStringLocalized {
-    final locale = QuestionnaireLocalization.instance.localization.locale;
+    final locale = QuestionnaireLocalizationData.instance.localization.locale;
     return valueStringElement?.extension_?.translationForLocale(locale) ??
         valueString;
   }

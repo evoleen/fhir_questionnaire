@@ -101,9 +101,9 @@ class QuestionnaireAttachmentItemViewState
                       icon: Icon(
                           value == null ? Icons.upload_rounded : Icons.refresh),
                       label: Text(value == null
-                          ? QuestionnaireLocalization
+                          ? QuestionnaireLocalizationData
                               .instance.localization.btnUpload
-                          : QuestionnaireLocalization
+                          : QuestionnaireLocalizationData
                               .instance.localization.btnChange),
                     ),
                   ),
@@ -128,7 +128,7 @@ class QuestionnaireAttachmentItemViewState
                         foregroundColor: theme.colorScheme.onError,
                       ),
                       icon: const Icon(Icons.delete_forever_rounded),
-                      label: Text(QuestionnaireLocalization
+                      label: Text(QuestionnaireLocalizationData
                           .instance.localization.btnRemove),
                     ),
                   ),

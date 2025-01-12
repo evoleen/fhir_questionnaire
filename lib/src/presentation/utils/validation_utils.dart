@@ -1,5 +1,5 @@
 import 'package:fhir/r4.dart';
-import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_localization.dart';
+import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_localization_data.dart';
 import 'package:flutter/material.dart';
 import 'package:fhir_questionnaire/src/logic/utils/num_utils.dart';
 import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
@@ -7,12 +7,12 @@ import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
 class ValidationUtils {
   static ValidationController get requiredFieldValidation =>
       EnhancedEmptyValidationController(
-          message: QuestionnaireLocalization
+          message: QuestionnaireLocalizationData
               .instance.localization.exceptionNoEmptyField);
 
   static ValidationController get positiveIntegerNumberValidation =>
       PositiveIntegerValidationController(
-          message: QuestionnaireLocalization.instance.localization
+          message: QuestionnaireLocalizationData.instance.localization
               .exceptionValueMustBeAPositiveIntegerNumber);
 
   static ValidationController positiveNumberValidation({
@@ -21,7 +21,7 @@ class ValidationUtils {
   }) =>
       ValidationController(
           message: message ??
-              QuestionnaireLocalization
+              QuestionnaireLocalizationData
                   .instance.localization.exceptionValueMustBeAPositiveNumber,
           isValid: ({controller}) {
             String? textValue = controller?.rawValue?.toString();
@@ -33,7 +33,7 @@ class ValidationUtils {
   static ValidationController integerRangeValidationController(
           {required int minValue, required int maxValue}) =>
       IntegerRangeValidationController(
-        message: QuestionnaireLocalization.instance.localization
+        message: QuestionnaireLocalizationData.instance.localization
             .exceptionValueOutOfRange(minValue, maxValue),
         minValue: minValue,
         maxValue: maxValue,
@@ -59,7 +59,7 @@ class ValidationUtils {
   }) =>
       ValidationController(
           message: message ??
-              QuestionnaireLocalization.instance.localization
+              QuestionnaireLocalizationData.instance.localization
                   .exceptionTextLength(minLength, maxLength ?? (minLength * 2)),
           isValid: ({controller}) {
             String textValue = controller?.rawValue?.toString().trim() ?? '';
@@ -79,7 +79,7 @@ class ValidationUtils {
   }) =>
       ValidationController(
           message: message ??
-              QuestionnaireLocalization.instance.localization
+              QuestionnaireLocalizationData.instance.localization
                   .exceptionTextMaxLength(maxLength),
           isValid: ({controller}) {
             String textValue = controller?.rawValue?.toString().trim() ?? '';
@@ -96,7 +96,8 @@ class ValidationUtils {
   }) =>
       UrlValidationController(
         message: message ??
-            QuestionnaireLocalization.instance.localization.exceptionInvalidUrl,
+            QuestionnaireLocalizationData
+                .instance.localization.exceptionInvalidUrl,
         required: required,
       );
 }
@@ -105,7 +106,7 @@ class EnhancedEmptyValidationController extends ValidationController {
   EnhancedEmptyValidationController({String? message})
       : super(
           message: message ??
-              QuestionnaireLocalization
+              QuestionnaireLocalizationData
                   .instance.localization.exceptionNoEmptyField,
           isValid: ({controller}) {
             final rawValue = controller?.rawValue;

@@ -97,7 +97,8 @@ abstract class QuestionnaireChoiceItemViewState<
               bottom: 4.0,
             ),
             child: Text(
-              QuestionnaireLocalization.instance.localization.textOtherOption,
+              QuestionnaireLocalizationData
+                  .instance.localization.textOtherOption,
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ),

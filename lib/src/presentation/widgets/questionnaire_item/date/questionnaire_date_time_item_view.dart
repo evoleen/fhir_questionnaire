@@ -96,7 +96,7 @@ class QuestionnaireDateTimeItemViewState
                   return ElevatedButton.icon(
                       icon: const Icon(Icons.calendar_month),
                       label: Text(dateTime?.formattedDate() ??
-                          QuestionnaireLocalization
+                          QuestionnaireLocalizationData
                               .instance.localization.textDate),
                       style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
                       onPressed: openDatePicker);
@@ -113,7 +113,7 @@ class QuestionnaireDateTimeItemViewState
                   return ElevatedButton.icon(
                       icon: const Icon(Icons.access_time_rounded),
                       label: Text(dateTime?.formattedTime() ??
-                          QuestionnaireLocalization
+                          QuestionnaireLocalizationData
                               .instance.localization.textTime),
                       style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
                       onPressed: openTimePicker);
