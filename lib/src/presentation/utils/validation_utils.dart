@@ -7,12 +7,7 @@ import 'package:flutter/widgets.dart';
 
 class ValidationUtils {
   static ValidationController requiredFieldValidation(BuildContext context) =>
-      EnhancedEmptyValidationController(
-        context: context,
-        message: QuestionnaireLocalization.of(context)
-            .localization
-            .exceptionNoEmptyField,
-      );
+      EnhancedEmptyValidationController(context: context);
 
   static ValidationController positiveIntegerNumberValidation(
           BuildContext context) =>
@@ -124,14 +119,13 @@ class ValidationUtils {
 }
 
 class EnhancedEmptyValidationController extends ValidationController {
+  final String? customMessage;
+  final BuildContext context;
+
   EnhancedEmptyValidationController({
-    required BuildContext context,
-    String? message,
+    required this.context,
+    this.customMessage,
   }) : super(
-          message: message ??
-              QuestionnaireLocalization.of(context)
-                  .localization
-                  .exceptionNoEmptyField,
           isValid: ({controller}) {
             final rawValue = controller?.rawValue;
             if (rawValue is List<QuestionnaireAnswerOption>) {
@@ -141,4 +135,8 @@ class EnhancedEmptyValidationController extends ValidationController {
             }
           },
         );
+
+  @override
+  String? get message => customMessage ??
+      QuestionnaireLocalization.of(context).localization.exceptionNoEmptyField;
 }
