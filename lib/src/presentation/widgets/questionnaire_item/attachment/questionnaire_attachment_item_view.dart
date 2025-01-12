@@ -49,7 +49,7 @@ class QuestionnaireAttachmentItemViewState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (item.title.isNotEmpty)
+        if (item.title(context).isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(
               left: 8.0,
@@ -57,7 +57,7 @@ class QuestionnaireAttachmentItemViewState
               bottom: 4.0,
             ),
             child: Text(
-              item.title!,
+              item.title(context)!,
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ),
@@ -101,10 +101,10 @@ class QuestionnaireAttachmentItemViewState
                       icon: Icon(
                           value == null ? Icons.upload_rounded : Icons.refresh),
                       label: Text(value == null
-                          ? QuestionnaireLocalizationData
-                              .instance.localization.btnUpload
-                          : QuestionnaireLocalizationData
-                              .instance.localization.btnChange),
+                          ? QuestionnaireLocalization
+                              .of(context).localization.btnUpload
+                          : QuestionnaireLocalization
+                              .of(context).localization.btnChange),
                     ),
                   ),
                 ),
@@ -128,8 +128,8 @@ class QuestionnaireAttachmentItemViewState
                         foregroundColor: theme.colorScheme.onError,
                       ),
                       icon: const Icon(Icons.delete_forever_rounded),
-                      label: Text(QuestionnaireLocalizationData
-                          .instance.localization.btnRemove),
+                      label: Text(QuestionnaireLocalization
+                          .of(context).localization.btnRemove),
                     ),
                   ),
                 ),
