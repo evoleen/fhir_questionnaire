@@ -1,21 +1,22 @@
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:fhir_questionnaire/src/logic/utils/fhir_extensions_utils.dart';
+import 'package:flutter/material.dart';
 
 extension CodeableConceptUtils on CodeableConcept {
-  String? get title {
-    final locale = QuestionnaireLocalizationData.instance.localization.locale;
+  String? title(final BuildContext context) {
+    final locale = QuestionnaireLocalization.of(context).localization.locale;
 
     final textLocalized =
         textElement?.extension_?.translationForLocale(locale) ?? text;
 
-    return textLocalized ?? coding?.firstOrNull?.title;
+    return textLocalized ?? coding?.firstOrNull?.title(context);
   }
 }
 
 extension CodingUtils on Coding {
-  String? get title {
-    final locale = QuestionnaireLocalizationData.instance.localization.locale;
+  String?  title(final BuildContext context) {
+    final locale = QuestionnaireLocalization.of(context).localization.locale;
     final displayLocalized =
         displayElement?.extension_?.translationForLocale(locale) ?? display;
 
@@ -38,12 +39,12 @@ extension FhirDateTimeUtils on FhirDateTime {
 }
 
 extension QuestionnaireItemUtils on QuestionnaireItem {
-  String? get title {
-    final locale = QuestionnaireLocalizationData.instance.localization.locale;
+  String? title(final BuildContext context) {
+    final locale = QuestionnaireLocalization.of(context).localization.locale;
 
     final textLocalized =
         textElement?.extension_?.translationForLocale(locale) ?? text;
-    return textLocalized ?? code?.firstOrNull?.title;
+    return textLocalized ?? code?.firstOrNull?.title(context);
   }
 }
 
@@ -53,8 +54,8 @@ extension QuestionnaireUtils on Questionnaire {
 }
 
 extension QuestionnaireAnswerOptionUtils on QuestionnaireAnswerOption {
-  String? get valueStringLocalized {
-    final locale = QuestionnaireLocalizationData.instance.localization.locale;
+  String? valueStringLocalized(final BuildContext context) {
+    final locale = QuestionnaireLocalization.of(context).localization.locale;
     return valueStringElement?.extension_?.translationForLocale(locale) ??
         valueString;
   }
