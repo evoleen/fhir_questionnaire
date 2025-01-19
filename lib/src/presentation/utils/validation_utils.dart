@@ -6,8 +6,8 @@ import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
 import 'package:flutter/widgets.dart';
 
 class ValidationUtils {
-  static ValidationController requiredFieldValidation(BuildContext context) =>
-      EnhancedEmptyValidationController(context: context);
+  static ValidationController requiredFieldValidation() =>
+      EnhancedEmptyValidationController();
 
   static ValidationController positiveIntegerNumberValidation(
           BuildContext context) =>
@@ -49,14 +49,14 @@ class ValidationUtils {
   static List<ValidationController> requiredPositiveIntegerNumberValidations(
           BuildContext context) =>
       [
-        requiredFieldValidation(context),
+        requiredFieldValidation(),
         positiveIntegerNumberValidation(context),
       ];
 
   static List<ValidationController> requiredPositiveNumberValidations(
           BuildContext context) =>
       [
-        requiredFieldValidation(context),
+        requiredFieldValidation(),
         positiveNumberValidation(context: context),
       ];
 
@@ -120,10 +120,8 @@ class ValidationUtils {
 
 class EnhancedEmptyValidationController extends ValidationController {
   final String? customMessage;
-  final BuildContext context;
 
   EnhancedEmptyValidationController({
-    required this.context,
     this.customMessage,
   }) : super(
           isValid: ({controller}) {
@@ -138,5 +136,5 @@ class EnhancedEmptyValidationController extends ValidationController {
 
   @override
   String? get message => customMessage ??
-      QuestionnaireLocalization.of(context).localization.exceptionNoEmptyField;
+      QuestionnaireLocalization.current.localization.exceptionNoEmptyField;
 }
