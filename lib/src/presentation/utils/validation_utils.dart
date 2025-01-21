@@ -3,26 +3,29 @@ import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_l
 import 'package:flutter/material.dart';
 import 'package:fhir_questionnaire/src/logic/utils/num_utils.dart';
 import 'package:fhir_questionnaire/src/logic/utils/text_utils.dart';
+import 'package:flutter/widgets.dart';
 
 class ValidationUtils {
-  static ValidationController get requiredFieldValidation =>
-      EnhancedEmptyValidationController(
-          message: QuestionnaireLocalization
-              .instance.localization.exceptionNoEmptyField);
+  static ValidationController requiredFieldValidation() =>
+      EnhancedEmptyValidationController();
 
-  static ValidationController get positiveIntegerNumberValidation =>
+  static ValidationController positiveIntegerNumberValidation(
+          BuildContext context) =>
       PositiveIntegerValidationController(
-          message: QuestionnaireLocalization.instance.localization
+          message: QuestionnaireLocalization.of(context)
+              .localization
               .exceptionValueMustBeAPositiveIntegerNumber);
 
   static ValidationController positiveNumberValidation({
+    required BuildContext context,
     String? message,
     bool required = false,
   }) =>
       ValidationController(
           message: message ??
-              QuestionnaireLocalization
-                  .instance.localization.exceptionValueMustBeAPositiveNumber,
+              QuestionnaireLocalization.of(context)
+                  .localization
+                  .exceptionValueMustBeAPositiveNumber,
           isValid: ({controller}) {
             String? textValue = controller?.rawValue?.toString();
             if (!required && textValue.isEmpty) return true;
@@ -30,27 +33,35 @@ class ValidationUtils {
             return (value ?? -1) >= 0;
           });
 
-  static ValidationController integerRangeValidationController(
-          {required int minValue, required int maxValue}) =>
+  static ValidationController integerRangeValidationController({
+    required BuildContext context,
+    required int minValue,
+    required int maxValue,
+  }) =>
       IntegerRangeValidationController(
-        message: QuestionnaireLocalization.instance.localization
+        message: QuestionnaireLocalization.of(context)
+            .localization
             .exceptionValueOutOfRange(minValue, maxValue),
         minValue: minValue,
         maxValue: maxValue,
       );
 
-  static List<ValidationController>
-      get requiredPositiveIntegerNumberValidations => [
-            requiredFieldValidation,
-            positiveIntegerNumberValidation,
-          ];
+  static List<ValidationController> requiredPositiveIntegerNumberValidations(
+          BuildContext context) =>
+      [
+        requiredFieldValidation(),
+        positiveIntegerNumberValidation(context),
+      ];
 
-  static List<ValidationController> get requiredPositiveNumberValidations => [
-        requiredFieldValidation,
-        positiveNumberValidation(),
+  static List<ValidationController> requiredPositiveNumberValidations(
+          BuildContext context) =>
+      [
+        requiredFieldValidation(),
+        positiveNumberValidation(context: context),
       ];
 
   static ValidationController lengthValidation({
+    required BuildContext context,
     int minLength = 0,
     int? maxLength,
     String? message,
@@ -59,7 +70,8 @@ class ValidationUtils {
   }) =>
       ValidationController(
           message: message ??
-              QuestionnaireLocalization.instance.localization
+              QuestionnaireLocalization.of(context)
+                  .localization
                   .exceptionTextLength(minLength, maxLength ?? (minLength * 2)),
           isValid: ({controller}) {
             String textValue = controller?.rawValue?.toString().trim() ?? '';
@@ -73,13 +85,15 @@ class ValidationUtils {
 
   static ValidationController maxLengthValidation({
     required int maxLength,
+    required BuildContext context,
     String? message,
     bool required = false,
     bool considerExtendedCharacters = true,
   }) =>
       ValidationController(
           message: message ??
-              QuestionnaireLocalization.instance.localization
+              QuestionnaireLocalization.of(context)
+                  .localization
                   .exceptionTextMaxLength(maxLength),
           isValid: ({controller}) {
             String textValue = controller?.rawValue?.toString().trim() ?? '';
@@ -93,20 +107,23 @@ class ValidationUtils {
   static ValidationController urlValidation({
     String? message,
     bool required = false,
+    required BuildContext context,
   }) =>
       UrlValidationController(
         message: message ??
-            QuestionnaireLocalization.instance.localization.exceptionInvalidUrl,
+            QuestionnaireLocalization.of(context)
+                .localization
+                .exceptionInvalidUrl,
         required: required,
       );
 }
 
 class EnhancedEmptyValidationController extends ValidationController {
-  EnhancedEmptyValidationController({String? message})
-      : super(
-          message: message ??
-              QuestionnaireLocalization
-                  .instance.localization.exceptionNoEmptyField,
+  final String? customMessage;
+
+  EnhancedEmptyValidationController({
+    this.customMessage,
+  }) : super(
           isValid: ({controller}) {
             final rawValue = controller?.rawValue;
             if (rawValue is List<QuestionnaireAnswerOption>) {
@@ -116,4 +133,8 @@ class EnhancedEmptyValidationController extends ValidationController {
             }
           },
         );
+
+  @override
+  String? get message => customMessage ??
+      QuestionnaireLocalization.current.localization.exceptionNoEmptyField;
 }
