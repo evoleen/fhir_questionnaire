@@ -268,12 +268,14 @@ class QuestionnaireController {
   List<QuestionnaireResponseAnswer> generateChoiceAnswer(dynamic data) {
     final answers = <QuestionnaireResponseAnswer>[];
     if (data is QuestionnaireAnswerOption) {
-      answers.add(QuestionnaireResponseAnswer(
-        valueCoding: data.valueCoding,
-        valueString: data.valueString,
-        valueInteger: data.valueInteger,
-        extension_: data.extension_,
-      ));
+      answers.add(
+        QuestionnaireResponseAnswer(
+          valueCoding: data.valueCoding,
+          valueString: data.valueString,
+          valueInteger: data.valueInteger,
+          extension_: data.extension_,
+        ),
+      );
     } else if (data is List<QuestionnaireAnswerOption>) {
       for (final answerOption in data) {
         answers.addAll(generateChoiceAnswer(answerOption));

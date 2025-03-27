@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
@@ -35,11 +36,25 @@ abstract class QuestionnaireChoiceItemViewState<
   bool get wantKeepAlive => isOpen;
 
   bool get isOpen => widget.isOpen;
-  String valueNameResolver(QuestionnaireAnswerOption value) =>
-      value.valueCoding?.title ??
-      value.valueString ??
-      value.valueInteger?.toString() ??
-      '';
+  String valueNameResolver(QuestionnaireAnswerOption value) {
+    final locale = QuestionnaireLocalization.instance.locale;
+    final localization = value.extension_?.firstWhereOrNull(
+      (ext) =>
+          ext.url ==
+              FhirUri('http://hl7.org/fhir/StructureDefinition/translation') &&
+          ext.extension_?.firstWhereOrNull(
+                  (e) => e.url == FhirUri('lang') && e.valueCode == locale) !=
+              null,
+    );
+
+    return localization?.extension_
+            ?.firstWhereOrNull((e) => e.url == FhirUri('content'))
+            ?.valueString ??
+        value.valueCoding?.title ??
+        value.valueString ??
+        value.valueInteger?.toString() ??
+        '';
+  }
 
   QuestionnaireAnswerOption onOpenAnswerAdded(String value,
       {bool? hideKeyboard}) {
@@ -55,13 +70,32 @@ abstract class QuestionnaireChoiceItemViewState<
 
   Widget choiceView(BuildContext context);
 
+  String titleNameResolver() {
+    final locale = QuestionnaireLocalization.instance.locale;
+    final localization = item.extension_?.firstWhereOrNull(
+      (ext) =>
+          ext.url ==
+              FhirUri('http://hl7.org/fhir/StructureDefinition/translation') &&
+          ext.extension_?.firstWhereOrNull(
+                  (e) => e.url == FhirUri('lang') && e.valueCode == locale) !=
+              null,
+    );
+
+    return localization?.extension_
+            ?.firstWhereOrNull((e) => e.url == FhirUri('content'))
+            ?.valueString ??
+        item.title ??
+        '';
+  }
+
   @override
   Widget buildBody(BuildContext context) {
     final theme = Theme.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (item.title.isNotEmpty)
+        if (titleNameResolver().isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(
               left: 8.0,
@@ -69,7 +103,7 @@ abstract class QuestionnaireChoiceItemViewState<
               bottom: 4.0,
             ),
             child: Text(
-              item.title!,
+              titleNameResolver(),
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ),

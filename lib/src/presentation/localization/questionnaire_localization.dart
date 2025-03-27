@@ -4,6 +4,7 @@ import 'package:fhir_questionnaire/src/presentation/localization/questionnaire_e
 
 class QuestionnaireLocalization {
   static final instance = QuestionnaireLocalization();
+  String locale = 'en';
   QuestionnaireBaseLocalization localization = QuestionnaireEnLocalization();
   QuestionnaireBaseLocalization _defaultLocalization =
       QuestionnaireEnLocalization();
@@ -28,6 +29,7 @@ class QuestionnaireLocalization {
     }
     if (locale != null) {
       localization = _localizationsMap[locale] ?? _defaultLocalization;
+      this.locale = locale;
     }
   }
 }
