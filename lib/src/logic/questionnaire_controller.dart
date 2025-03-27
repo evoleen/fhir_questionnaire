@@ -4,10 +4,24 @@ import 'package:fhir_path/fhir_path.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/foundation.dart';
 
+class CustomBuilder {
+  final QuestionnaireItemView Function({
+    required QuestionnaireItem item,
+    QuestionnaireItemEnableWhenController? enableWhenController,
+  })? buildRadioButtonChoiceItemView;
+
+  const CustomBuilder({
+    this.buildRadioButtonChoiceItemView,
+  });
+}
+
 class QuestionnaireController {
+  final CustomBuilder customBuilder;
+
   /// Allows to override the function to generate individual item response
   QuestionnaireResponseItem? Function({
     required QuestionnaireItemBundle itemBundle,
+    required CustomBuilder customBuilder,
   })? onGenerateItemResponse;
 
   QuestionnaireItemBundle? Function({
@@ -20,6 +34,7 @@ class QuestionnaireController {
   QuestionnaireController({
     this.onGenerateItemResponse,
     this.onBuildItemBundle,
+    this.customBuilder = const CustomBuilder(),
   });
 
   QuestionnaireItemView? buildChoiceItemView(
@@ -39,10 +54,15 @@ class QuestionnaireController {
           enableWhenController: enableWhenController,
         );
       } else {
-        return QuestionnaireRadioButtonChoiceItemView(
-          item: item,
-          enableWhenController: enableWhenController,
-        );
+        return customBuilder.buildRadioButtonChoiceItemView != null
+            ? customBuilder.buildRadioButtonChoiceItemView!(
+                item: item,
+                enableWhenController: enableWhenController,
+              )
+            : QuestionnaireRadioButtonChoiceItemView(
+                item: item,
+                enableWhenController: enableWhenController,
+              );
       }
     }
   }
@@ -231,7 +251,10 @@ class QuestionnaireController {
     try {
       for (final QuestionnaireItem item in questionnaireItems ?? []) {
         QuestionnaireItemEnableWhenController? enableWhenController =
-            getEnableWhenController(item: item, itemBundles: itemBundles);
+            getEnableWhenController(
+          item: item,
+          itemBundles: itemBundles,
+        );
         final itemBundle = buildQuestionnaireItemBundle(
           item: item,
           enableWhenController: enableWhenController,
@@ -251,12 +274,17 @@ class QuestionnaireController {
   }
 
   List<QuestionnaireItemBundle> buildQuestionnaireItems(
-      Questionnaire questionnaire,
-      {Future<Attachment?> Function()? onAttachmentLoaded}) {
+    Questionnaire questionnaire, {
+    Future<Attachment?> Function()? onAttachmentLoaded,
+  }) {
     List<QuestionnaireItemBundle> itemBundles = [];
     try {
-      itemBundles.addAll(buildQuestionnaireItemBundles(questionnaire.item,
-          onAttachmentLoaded: onAttachmentLoaded));
+      itemBundles.addAll(
+        buildQuestionnaireItemBundles(
+          questionnaire.item,
+          onAttachmentLoaded: onAttachmentLoaded,
+        ),
+      );
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -566,8 +594,10 @@ class QuestionnaireController {
 
   QuestionnaireResponseItem? generateItemResponse(
       QuestionnaireItemBundle itemBundle) {
-    final itemResponseOverride =
-        onGenerateItemResponse?.call(itemBundle: itemBundle);
+    final itemResponseOverride = onGenerateItemResponse?.call(
+      customBuilder: customBuilder,
+      itemBundle: itemBundle,
+    );
     if (itemResponseOverride != null) return itemResponseOverride;
 
     List<QuestionnaireResponseItem>? childItems;

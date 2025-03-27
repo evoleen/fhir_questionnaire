@@ -75,6 +75,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   @override
   void initState() {
     super.initState();
+
     controller = widget.controller ?? QuestionnaireController();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback(onCreated);
@@ -143,6 +144,7 @@ class QuestionnaireViewState extends State<QuestionnaireView>
   }
 
   Future<void> buildQuestionnaireItems() async {
+    loading(true);
     itemBundles = controller.buildQuestionnaireItems(questionnaire,
         onAttachmentLoaded: widget.onAttachmentLoaded);
     loading(false);
