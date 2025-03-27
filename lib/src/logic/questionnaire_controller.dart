@@ -272,6 +272,7 @@ class QuestionnaireController {
         valueCoding: data.valueCoding,
         valueString: data.valueString,
         valueInteger: data.valueInteger,
+        extension_: data.extension_,
       ));
     } else if (data is List<QuestionnaireAnswerOption>) {
       for (final answerOption in data) {
@@ -600,6 +601,7 @@ class QuestionnaireController {
                               itemBundle.controller.rawValue?.toString())
                           ?.asFhirDecimal
                       : null,
+                  extension_: itemBundle.item.extension_,
                 )
               ];
         break;
@@ -608,8 +610,10 @@ class QuestionnaireController {
             ? null
             : [
                 QuestionnaireResponseAnswer(
-                    valueBoolean:
-                        FhirBoolean(itemBundle.controller.rawValue as bool))
+                  valueBoolean:
+                      FhirBoolean(itemBundle.controller.rawValue as bool),
+                  extension_: itemBundle.item.extension_,
+                )
               ];
         break;
       case QuestionnaireItemType.choice:
@@ -633,6 +637,7 @@ class QuestionnaireController {
                       ? null
                       : (itemBundle.controller.rawValue as DateTime)
                           .asFhirDateTime,
+                  extension_: itemBundle.item.extension_,
                 )
               ];
         break;
@@ -643,6 +648,7 @@ class QuestionnaireController {
             : [
                 QuestionnaireResponseAnswer(
                   valueQuantity: itemBundle.controller.rawValue as Quantity,
+                  extension_: itemBundle.item.extension_,
                 )
               ];
         break;
@@ -652,6 +658,7 @@ class QuestionnaireController {
             : [
                 QuestionnaireResponseAnswer(
                   valueAttachment: itemBundle.controller.rawValue as Attachment,
+                  extension_: itemBundle.item.extension_,
                 )
               ];
         break;
