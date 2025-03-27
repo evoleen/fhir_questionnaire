@@ -4,24 +4,24 @@ import 'package:fhir_path/fhir_path.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/foundation.dart';
 
-class CustomBuilder {
+class CustomViewBuilders {
   final QuestionnaireItemView Function({
     required QuestionnaireItem item,
     QuestionnaireItemEnableWhenController? enableWhenController,
   })? buildRadioButtonChoiceItemView;
 
-  const CustomBuilder({
+  const CustomViewBuilders({
     this.buildRadioButtonChoiceItemView,
   });
 }
 
 class QuestionnaireController {
-  final CustomBuilder customBuilder;
+  final CustomViewBuilders customViewBuilder;
 
   /// Allows to override the function to generate individual item response
   QuestionnaireResponseItem? Function({
     required QuestionnaireItemBundle itemBundle,
-    required CustomBuilder customBuilder,
+    required CustomViewBuilders customBuilder,
   })? onGenerateItemResponse;
 
   QuestionnaireItemBundle? Function({
@@ -34,7 +34,7 @@ class QuestionnaireController {
   QuestionnaireController({
     this.onGenerateItemResponse,
     this.onBuildItemBundle,
-    this.customBuilder = const CustomBuilder(),
+    this.customViewBuilder = const CustomViewBuilders(),
   });
 
   QuestionnaireItemView? buildChoiceItemView(
@@ -54,8 +54,8 @@ class QuestionnaireController {
           enableWhenController: enableWhenController,
         );
       } else {
-        return customBuilder.buildRadioButtonChoiceItemView != null
-            ? customBuilder.buildRadioButtonChoiceItemView!(
+        return customViewBuilder.buildRadioButtonChoiceItemView != null
+            ? customViewBuilder.buildRadioButtonChoiceItemView!(
                 item: item,
                 enableWhenController: enableWhenController,
               )
@@ -595,7 +595,7 @@ class QuestionnaireController {
   QuestionnaireResponseItem? generateItemResponse(
       QuestionnaireItemBundle itemBundle) {
     final itemResponseOverride = onGenerateItemResponse?.call(
-      customBuilder: customBuilder,
+      customBuilder: customViewBuilder,
       itemBundle: itemBundle,
     );
     if (itemResponseOverride != null) return itemResponseOverride;
