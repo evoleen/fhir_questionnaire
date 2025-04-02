@@ -19,8 +19,6 @@ extension QuestionnaireAnswerOptionX on QuestionnaireAnswerOption {
             ?.extension_
             ?.firstWhereOrNull((e) => e.url == FhirUri('content'))
             ?.valueString ??
-        valueCoding?.title ??
-        valueString ??
-        valueInteger?.toString();
+        valueString;
   }
 }
