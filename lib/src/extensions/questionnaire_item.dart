@@ -4,7 +4,6 @@ import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 
 extension QuestionnaireItemX on QuestionnaireItem {
   String? localizedTitle(final String locale) {
-    final locale = QuestionnaireLocalization.instance.locale;
     return extension_
             ?.firstWhereOrNull(
               (ext) =>

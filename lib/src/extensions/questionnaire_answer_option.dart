@@ -1,10 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:fhir/r4.dart';
-import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 
 extension QuestionnaireAnswerOptionX on QuestionnaireAnswerOption {
   String? localizedTitle(final String locale) {
-    final locale = QuestionnaireLocalization.instance.locale;
     return extension_
             ?.firstWhereOrNull(
               (ext) =>
