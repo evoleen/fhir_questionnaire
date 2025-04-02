@@ -51,3 +51,5 @@ export 'package:fhir_questionnaire/src/presentation/localization/questionnaire_l
 export 'package:fhir_questionnaire/src/presentation/localization/questionnaire_es_localization.dart';
 export 'package:fhir_questionnaire/src/presentation/localization/questionnaire_en_localization.dart';
 export 'package:fhir_questionnaire/src/presentation/localization/questionnaire_base_localization.dart';
+export 'package:fhir_questionnaire/src/extensions/questionnaire_answer_option.dart';
+export 'package:fhir_questionnaire/src/extensions/questionnaire_item.dart';

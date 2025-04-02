@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:fhir/r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
+import 'package:fhir_questionnaire/src/extensions/questionnaire_item.dart';
 import 'package:flutter/material.dart';
 
 /// Created by luis901101 on 3/9/24.
@@ -36,25 +37,6 @@ abstract class QuestionnaireChoiceItemViewState<
   bool get wantKeepAlive => isOpen;
 
   bool get isOpen => widget.isOpen;
-  String valueNameResolver(QuestionnaireAnswerOption value) {
-    final locale = QuestionnaireLocalization.instance.locale;
-    final localization = value.extension_?.firstWhereOrNull(
-      (ext) =>
-          ext.url ==
-              FhirUri('http://hl7.org/fhir/StructureDefinition/translation') &&
-          ext.extension_?.firstWhereOrNull(
-                  (e) => e.url == FhirUri('lang') && e.valueCode == locale) !=
-              null,
-    );
-
-    return localization?.extension_
-            ?.firstWhereOrNull((e) => e.url == FhirUri('content'))
-            ?.valueString ??
-        value.valueCoding?.title ??
-        value.valueString ??
-        value.valueInteger?.toString() ??
-        '';
-  }
 
   QuestionnaireAnswerOption onOpenAnswerAdded(String value,
       {bool? hideKeyboard}) {
@@ -70,22 +52,18 @@ abstract class QuestionnaireChoiceItemViewState<
 
   Widget choiceView(BuildContext context);
 
-  String titleNameResolver() {
-    final locale = QuestionnaireLocalization.instance.locale;
-    final localization = item.extension_?.firstWhereOrNull(
-      (ext) =>
-          ext.url ==
-              FhirUri('http://hl7.org/fhir/StructureDefinition/translation') &&
-          ext.extension_?.firstWhereOrNull(
-                  (e) => e.url == FhirUri('lang') && e.valueCode == locale) !=
-              null,
+  Widget titleView(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 8.0,
+        right: 8.0,
+        bottom: 4.0,
+      ),
+      child: Text(
+        item.localizedTitle(QuestionnaireLocalization.instance.locale) ?? '',
+        style: Theme.of(context).textTheme.titleSmall,
+      ),
     );
-
-    return localization?.extension_
-            ?.firstWhereOrNull((e) => e.url == FhirUri('content'))
-            ?.valueString ??
-        item.title ??
-        '';
   }
 
   @override
@@ -95,18 +73,7 @@ abstract class QuestionnaireChoiceItemViewState<
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (titleNameResolver().isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 8.0,
-              right: 8.0,
-              bottom: 4.0,
-            ),
-            child: Text(
-              titleNameResolver(),
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-          ),
+        titleView(context),
         choiceView(context),
         if (handleControllerErrorManually && controller.hasError)
           Padding(
