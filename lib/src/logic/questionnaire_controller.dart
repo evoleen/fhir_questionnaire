@@ -4,7 +4,20 @@ import 'package:fhir_path/fhir_path.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/foundation.dart';
 
+class CustomViewBuilders {
+  final QuestionnaireItemView Function({
+    required QuestionnaireItem item,
+    QuestionnaireItemEnableWhenController? enableWhenController,
+  })? buildRadioButtonChoiceItemView;
+
+  const CustomViewBuilders({
+    this.buildRadioButtonChoiceItemView,
+  });
+}
+
 class QuestionnaireController {
+  final CustomViewBuilders customViewBuilder;
+
   /// Allows to override the function to generate individual item response
   QuestionnaireResponseItem? Function({
     required QuestionnaireItemBundle itemBundle,
@@ -20,6 +33,7 @@ class QuestionnaireController {
   QuestionnaireController({
     this.onGenerateItemResponse,
     this.onBuildItemBundle,
+    this.customViewBuilder = const CustomViewBuilders(),
   });
 
   QuestionnaireItemView? buildChoiceItemView(
@@ -39,10 +53,15 @@ class QuestionnaireController {
           enableWhenController: enableWhenController,
         );
       } else {
-        return QuestionnaireRadioButtonChoiceItemView(
-          item: item,
-          enableWhenController: enableWhenController,
-        );
+        return customViewBuilder.buildRadioButtonChoiceItemView != null
+            ? customViewBuilder.buildRadioButtonChoiceItemView!(
+                item: item,
+                enableWhenController: enableWhenController,
+              )
+            : QuestionnaireRadioButtonChoiceItemView(
+                item: item,
+                enableWhenController: enableWhenController,
+              );
       }
     }
   }
@@ -563,7 +582,8 @@ class QuestionnaireController {
 
   QuestionnaireResponseItem? generateItemResponse(
       QuestionnaireItemBundle itemBundle) {
-    final itemResponseOverride = onGenerateItemResponse?.call(itemBundle: itemBundle);
+    final itemResponseOverride =
+        onGenerateItemResponse?.call(itemBundle: itemBundle);
     if (itemResponseOverride != null) return itemResponseOverride;
 
     List<QuestionnaireResponseItem>? childItems;

@@ -48,6 +48,20 @@ abstract class QuestionnaireChoiceItemViewState<
     return anwser;
   }
 
+  Widget titleView(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 8.0,
+        right: 8.0,
+        bottom: 4.0,
+      ),
+      child: Text(
+        item.title!,
+        style: Theme.of(context).textTheme.titleSmall,
+      ),
+    );
+  }
+
   Widget choiceView(BuildContext context);
 
   @override
@@ -56,18 +70,7 @@ abstract class QuestionnaireChoiceItemViewState<
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (item.title.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 8.0,
-              right: 8.0,
-              bottom: 4.0,
-            ),
-            child: Text(
-              item.title!,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-          ),
+        if (item.title.isNotEmpty) titleView(context),
         choiceView(context),
         if (handleControllerErrorManually && controller.hasError)
           Padding(
