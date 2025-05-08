@@ -5,7 +5,7 @@ import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/foundation.dart';
 
 class QuestionnaireController {
-  final QuestionnaireItemView Function({
+  final QuestionnaireItemView? Function({
     required QuestionnaireItem item,
     QuestionnaireItemEnableWhenController? enableWhenController,
     Future<Attachment?> Function()? onAttachmentLoaded,
@@ -83,6 +83,7 @@ class QuestionnaireController {
     required QuestionnaireItem item,
     required List<QuestionnaireItemBundle> itemBundles,
   }) {
+    itemBundles = _flattenItemBundles(itemBundles);
     QuestionnaireItemEnableWhenController? controller;
     if (item.enableWhen.isNotEmpty) {
       List<QuestionnaireItemEnableWhenBundle> list = [];
@@ -115,17 +116,25 @@ class QuestionnaireController {
     Future<Attachment?> Function()? onAttachmentLoaded,
     String? groupId,
   }) {
-    final itemBundleOverride = onBuildItemBundle?.call(
-      item: item,
-      enableWhenController: enableWhenController,
-      onAttachmentLoaded: onAttachmentLoaded,
-      groupId: groupId,
-    );
-    if (itemBundleOverride != null) return itemBundleOverride;
+    // final itemBundleOverride = onBuildItemBundle?.call(
+    //   item: item,
+    //   enableWhenController: enableWhenController,
+    //   onAttachmentLoaded: onAttachmentLoaded,
+    //   groupId: groupId,
+    // );
+    // if (itemBundleOverride != null) return itemBundleOverride;
 
     QuestionnaireItemView? itemView;
     List<QuestionnaireItemBundle>? children;
     final itemType = QuestionnaireItemType.valueOf(item.type.value);
+    final groupIdForChildren =
+        '${groupId != null ? "$groupId/" : ""}${item.linkId}';
+
+    children = buildQuestionnaireItemBundles(
+      item.item,
+      onAttachmentLoaded: onAttachmentLoaded,
+      groupId: groupIdForChildren,
+    );
 
     itemView = onBuildItemView?.call(
       item: item,
@@ -133,7 +142,7 @@ class QuestionnaireController {
       onAttachmentLoaded: onAttachmentLoaded,
     );
 
-    if (itemView != null) {
+    if (itemView == null) {
       switch (itemType) {
         case QuestionnaireItemType.string:
           itemView = QuestionnaireStringItemView(
@@ -208,14 +217,6 @@ class QuestionnaireController {
           );
           break;
         case QuestionnaireItemType.group:
-          final groupIdForChildren =
-              '${groupId != null ? "$groupId/" : ""}${item.linkId}';
-
-          children = buildQuestionnaireItemBundles(
-            item.item,
-            onAttachmentLoaded: onAttachmentLoaded,
-            groupId: groupIdForChildren,
-          );
           itemView = QuestionnaireGroupItemView(
             item: item,
             enableWhenController: enableWhenController,
@@ -699,5 +700,24 @@ class QuestionnaireController {
     }
 
     return items;
+  }
+
+  /// Takes a list [QuestionnaireItemBundle] flattens it by extracting all the
+  /// child items and putting them all in one list.
+  ///
+  /// Can be used for searching/filtering a list of [QuestionnaireItemBundle] objects
+  List<QuestionnaireItemBundle> _flattenItemBundles(
+    List<QuestionnaireItemBundle> itemBundles,
+  ) {
+    final flattenedList = <QuestionnaireItemBundle>[];
+
+    for (var itemBundle in itemBundles) {
+      flattenedList.add(itemBundle);
+      if (itemBundle.children?.isNotEmpty == true) {
+        flattenedList.addAll(_flattenItemBundles(itemBundle.children!));
+      }
+    }
+
+    return flattenedList;
   }
 }
