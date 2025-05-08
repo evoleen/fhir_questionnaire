@@ -116,14 +116,6 @@ class QuestionnaireController {
     Future<Attachment?> Function()? onAttachmentLoaded,
     String? groupId,
   }) {
-    // final itemBundleOverride = onBuildItemBundle?.call(
-    //   item: item,
-    //   enableWhenController: enableWhenController,
-    //   onAttachmentLoaded: onAttachmentLoaded,
-    //   groupId: groupId,
-    // );
-    // if (itemBundleOverride != null) return itemBundleOverride;
-
     QuestionnaireItemView? itemView;
     List<QuestionnaireItemBundle>? children;
     final itemType = QuestionnaireItemType.valueOf(item.type.value);
