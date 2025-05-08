@@ -39,7 +39,6 @@ extension FhirExtensionUtils on Iterable<FhirExtension> {
   /// print(localizedContent); // Output: Hello, World!
   /// ```
   String? localize([final String? locale]) {
-    final defaultLocale = Intl.defaultLocale;
     final translation = firstWhereOrNull(
       (ext) =>
           ext.url ==
