@@ -52,3 +52,4 @@ export 'package:fhir_questionnaire/src/presentation/localization/questionnaire_e
 export 'package:fhir_questionnaire/src/presentation/localization/questionnaire_en_localization.dart';
 export 'package:fhir_questionnaire/src/presentation/localization/questionnaire_base_localization.dart';
 export 'package:fhir_questionnaire/src/logic/utils/fhir_extension_utils.dart';
+export 'package:fhir_questionnaire/src/logic/utils/iterable_questionnaire_item_bundle.dart';

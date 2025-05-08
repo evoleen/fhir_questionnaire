@@ -83,7 +83,7 @@ class QuestionnaireController {
     required QuestionnaireItem item,
     required List<QuestionnaireItemBundle> itemBundles,
   }) {
-    itemBundles = _flattenItemBundles(itemBundles);
+    itemBundles = itemBundles.flatten();
     QuestionnaireItemEnableWhenController? controller;
     if (item.enableWhen.isNotEmpty) {
       List<QuestionnaireItemEnableWhenBundle> list = [];
@@ -692,24 +692,5 @@ class QuestionnaireController {
     }
 
     return items;
-  }
-
-  /// Takes a list [QuestionnaireItemBundle] flattens it by extracting all the
-  /// child items and putting them all in one list.
-  ///
-  /// Can be used for searching/filtering a list of [QuestionnaireItemBundle] objects
-  List<QuestionnaireItemBundle> _flattenItemBundles(
-    List<QuestionnaireItemBundle> itemBundles,
-  ) {
-    final flattenedList = <QuestionnaireItemBundle>[];
-
-    for (var itemBundle in itemBundles) {
-      flattenedList.add(itemBundle);
-      if (itemBundle.children?.isNotEmpty == true) {
-        flattenedList.addAll(_flattenItemBundles(itemBundle.children!));
-      }
-    }
-
-    return flattenedList;
   }
 }
