@@ -39,13 +39,17 @@ extension FhirExtensionUtils on Iterable<FhirExtension> {
   /// print(localizedContent); // Output: Hello, World!
   /// ```
   String? localize([final String? locale]) {
+    final targetLocale = (locale ?? Intl.defaultLocale)!;
+    final languageCode = targetLocale.split('_').first;
     final translation = firstWhereOrNull(
       (ext) =>
           ext.url ==
               FhirUri('http://hl7.org/fhir/StructureDefinition/translation') &&
           ext.extension_?.firstWhereOrNull((e) =>
                   e.url == FhirUri('lang') &&
-                  e.valueCode?.value == (locale ?? Intl.defaultLocale)) !=
+                  (e.valueCode?.value == targetLocale ||
+                      (e.valueCode?.value?.startsWith(languageCode) ??
+                          false))) !=
               null,
     )?.extension_?.firstWhereOrNull((e) => e.url == FhirUri('content'));
 
