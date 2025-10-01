@@ -5,27 +5,27 @@ import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/foundation.dart';
 
 class QuestionnaireController {
-  final QuestionnaireItemView? Function({
-    required QuestionnaireItem item,
-    QuestionnaireItemEnableWhenController? enableWhenController,
-    Future<Attachment?> Function()? onAttachmentLoaded,
-  })? onBuildItemView;
-
   /// Allows to override the function to generate individual item response
-  QuestionnaireResponseItem? Function({
-    required QuestionnaireItemBundle itemBundle,
-  })? onGenerateItemResponse;
+  /// either to generate a new [QuestionnaireResponseItem] or modify the generated one
+  QuestionnaireResponseItem Function(
+    QuestionnaireItemBundle itemBundle,
+    QuestionnaireResponseItem questionnaireResponseItem,
+  )? onGenerateItemResponse;
 
-  QuestionnaireItemBundle? Function({
-    required QuestionnaireItem item,
+  /// Allows customizing the logic that maps [QuestionnaireItem] objects into
+  /// [QuestionnaireItemView] widgets.
+  ///
+  /// [enableWhenController] needs to be passed to the returned [QuestionnaireItemView]
+  /// otherwise the enableWhen functionality of for that QuestionnaireItem will not work.
+  /// assuming that questionnaire item has enableWhen values
+  QuestionnaireItemView? Function(
+    QuestionnaireItem item,
     QuestionnaireItemEnableWhenController? enableWhenController,
     Future<Attachment?> Function()? onAttachmentLoaded,
-    String? groupId,
-  })? onBuildItemBundle;
+  )? onBuildItemView;
 
   QuestionnaireController({
     this.onGenerateItemResponse,
-    this.onBuildItemBundle,
     this.onBuildItemView,
   });
 
@@ -83,7 +83,8 @@ class QuestionnaireController {
     required QuestionnaireItem item,
     required List<QuestionnaireItemBundle> itemBundles,
   }) {
-    itemBundles = itemBundles.flatten();
+    itemBundles = _flattenItemBundles(itemBundles);
+
     QuestionnaireItemEnableWhenController? controller;
     if (item.enableWhen.isNotEmpty) {
       List<QuestionnaireItemEnableWhenBundle> list = [];
@@ -107,6 +108,7 @@ class QuestionnaireController {
         );
       }
     }
+
     return controller;
   }
 
@@ -115,6 +117,7 @@ class QuestionnaireController {
     QuestionnaireItemEnableWhenController? enableWhenController,
     Future<Attachment?> Function()? onAttachmentLoaded,
     String? groupId,
+    List<QuestionnaireItemBundle>? alreadyBuiltItemBundles,
   }) {
     QuestionnaireItemView? itemView;
     List<QuestionnaireItemBundle>? children;
@@ -126,12 +129,13 @@ class QuestionnaireController {
       item.item,
       onAttachmentLoaded: onAttachmentLoaded,
       groupId: groupIdForChildren,
+      alreadyBuiltItemBundles: alreadyBuiltItemBundles,
     );
 
     itemView = onBuildItemView?.call(
-      item: item,
-      enableWhenController: enableWhenController,
-      onAttachmentLoaded: onAttachmentLoaded,
+      item,
+      enableWhenController,
+      onAttachmentLoaded,
     );
 
     if (itemView == null) {
@@ -233,17 +237,26 @@ class QuestionnaireController {
     List<QuestionnaireItem>? questionnaireItems, {
     required Future<Attachment?> Function()? onAttachmentLoaded,
     String? groupId,
+    List<QuestionnaireItemBundle>? alreadyBuiltItemBundles,
   }) {
     List<QuestionnaireItemBundle> itemBundles = [];
     try {
       for (final QuestionnaireItem item in questionnaireItems ?? []) {
         QuestionnaireItemEnableWhenController? enableWhenController =
-            getEnableWhenController(item: item, itemBundles: itemBundles);
+            getEnableWhenController(item: item, itemBundles: [
+          ...(alreadyBuiltItemBundles ?? []),
+          ...itemBundles,
+        ]);
+
         final itemBundle = buildQuestionnaireItemBundle(
           item: item,
           enableWhenController: enableWhenController,
           onAttachmentLoaded: onAttachmentLoaded,
           groupId: groupId,
+          alreadyBuiltItemBundles: [
+            ...(alreadyBuiltItemBundles ?? []),
+            ...itemBundles,
+          ],
         );
         if (itemBundle != null) {
           itemBundles.add(itemBundle);
@@ -570,13 +583,13 @@ class QuestionnaireController {
 
   QuestionnaireResponseItem? generateItemResponse(
       QuestionnaireItemBundle itemBundle) {
-    final itemResponseOverride =
-        onGenerateItemResponse?.call(itemBundle: itemBundle);
-    if (itemResponseOverride != null) return itemResponseOverride;
-
     List<QuestionnaireResponseItem>? childItems;
     List<QuestionnaireResponseAnswer>? answers;
     final itemType = QuestionnaireItemType.valueOf(itemBundle.item.type.value);
+    if (itemBundle.children.isNotEmpty) {
+      childItems = generateItemResponses(itemBundles: itemBundle.children!);
+    }
+
     switch (itemType) {
       case QuestionnaireItemType.display:
 
@@ -663,15 +676,13 @@ class QuestionnaireController {
               ];
         break;
 
-      /// The answers of a group are the answers of the children
       case QuestionnaireItemType.group:
-        if (itemBundle.children.isNotEmpty) {
-          childItems = generateItemResponses(itemBundles: itemBundle.children!);
-        }
+        // The answers of a group are the answers of the children
         break;
       default:
     }
-    return QuestionnaireResponseItem(
+
+    var item = QuestionnaireResponseItem(
       linkId: itemBundle.item.linkId,
       definition: itemBundle.item.definition,
       text: itemBundle.item.text,
@@ -679,6 +690,12 @@ class QuestionnaireController {
       item: childItems,
       extension_: itemBundle.item.extension_,
     );
+
+    if (onGenerateItemResponse != null) {
+      item = onGenerateItemResponse!.call(itemBundle, item);
+    }
+
+    return item;
   }
 
   List<QuestionnaireResponseItem> generateItemResponses(
@@ -692,5 +709,24 @@ class QuestionnaireController {
     }
 
     return items;
+  }
+
+  /// Takes a list [QuestionnaireItemBundle] flattens it by extracting all the
+  /// child items and putting them all in one list.
+  ///
+  /// Can be used for searching/filtering a list of [QuestionnaireItemBundle] objects.
+  List<QuestionnaireItemBundle> _flattenItemBundles(
+    List<QuestionnaireItemBundle> itemBundles,
+  ) {
+    final flattenedList = <QuestionnaireItemBundle>[];
+
+    for (var itemBundle in itemBundles) {
+      flattenedList.add(itemBundle);
+      if (itemBundle.children?.isNotEmpty == true) {
+        flattenedList.addAll(_flattenItemBundles(itemBundle.children!));
+      }
+    }
+
+    return flattenedList;
   }
 }

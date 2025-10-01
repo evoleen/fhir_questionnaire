@@ -27,10 +27,10 @@ class QuestionnaireRadioButtonChoiceItemViewState
           .map((entry) => RadioListTile<QuestionnaireAnswerOption>(
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
-                title: Text(entry.title ?? ''),
+                title: Text(valueNameResolver(entry)),
                 value: entry,
                 groupValue: selectedValue,
-                onChanged: onSelectedValueChanged,
+                onChanged: isReadOnly ? null : onSelectedValueChanged,
               ))
           .toList(),
     );
