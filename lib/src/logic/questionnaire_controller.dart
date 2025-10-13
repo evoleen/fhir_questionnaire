@@ -318,8 +318,8 @@ class QuestionnaireController {
     // capture all top-level variables as list, in order
     final rootExpressions = (questionnaire.extension_ ?? [])
         .where((ext) =>
-            ext.url ==
-                FhirUri('http://hl7.org/fhir/StructureDefinition/variable') &&
+            ext.url.valueString ==
+                'http://hl7.org/fhir/StructureDefinition/variable' &&
             ext.valueExpression?.language.valueEnum ==
                 ExpressionLanguageEnum.textFhirpath)
         .toList();
@@ -385,9 +385,8 @@ class QuestionnaireController {
 
       final calculatedExpressions = (item.extension_ ?? [])
           .where((ext) =>
-              ext.url ==
-                  FhirUri(
-                      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression') &&
+              ext.url.valueString ==
+                  'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression' &&
               ext.valueExpression?.language.valueEnum ==
                   ExpressionLanguageEnum.textFhirpath)
           .toList()
@@ -446,9 +445,8 @@ class QuestionnaireController {
                   .extension_ ??
               [])
           .where((ext) =>
-              ext.url ==
-                  FhirUri(
-                      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression') &&
+              ext.url.valueString ==
+                  'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression' &&
               ext.valueExpression?.language.valueEnum ==
                   ExpressionLanguageEnum.textFhirpath)
           .toList();
