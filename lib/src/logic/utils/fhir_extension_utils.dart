@@ -49,14 +49,14 @@ extension FhirExtensionUtils on Iterable<FhirExtension> {
     String langCode = locale.languageCode;
     final translation = firstWhereOrNull(
       (ext) =>
-          ext.url ==
-              FhirUri('http://hl7.org/fhir/StructureDefinition/translation') &&
+          ext.url.valueString ==
+              'http://hl7.org/fhir/StructureDefinition/translation' &&
           ext.extension_?.firstWhereOrNull((e) =>
-                  e.url == FhirUri('lang') &&
+                  e.url.valueString == 'lang' &&
                       e.valueCode?.valueString == langTag ||
                   e.valueCode?.valueString == langCode) !=
               null,
-    )?.extension_?.firstWhereOrNull((e) => e.url == FhirUri('content'));
+    )?.extension_?.firstWhereOrNull((e) => e.url.valueString == 'content');
 
     return translation?.valueString?.valueString ??
         translation?.valueMarkdown?.valueString;
