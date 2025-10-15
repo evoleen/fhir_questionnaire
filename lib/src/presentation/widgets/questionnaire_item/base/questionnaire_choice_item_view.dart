@@ -1,4 +1,4 @@
-import 'package:fhir/r4.dart';
+import 'package:fhir_r4/fhir_r4.dart';
 import 'package:fhir_questionnaire/fhir_questionnaire.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
@@ -43,10 +43,10 @@ abstract class QuestionnaireChoiceItemViewState<
       {bool? hideKeyboard}) {
     hideKeyboard ??= true;
     QuestionnaireAnswerOption newAnwser;
-    final existingAnswer =
-        values.firstWhereOrNull((answer) => answer.valueString == value);
+    final existingAnswer = values
+        .firstWhereOrNull((answer) => answer.valueString?.valueString == value);
     if (existingAnswer == null) {
-      newAnwser = QuestionnaireAnswerOption(valueString: value);
+      newAnwser = QuestionnaireAnswerOption(valueX: value.toFhirString);
       values.add(newAnwser);
     } else {
       newAnwser = existingAnswer;
@@ -61,24 +61,27 @@ abstract class QuestionnaireChoiceItemViewState<
 
   Widget choiceView(BuildContext context);
 
+  Widget titleView(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 8.0,
+        right: 8.0,
+        bottom: 4.0,
+      ),
+      child: Text(
+        item.title!,
+        style: Theme.of(context).textTheme.titleSmall,
+      ),
+    );
+  }
+
   @override
   Widget buildBody(BuildContext context) {
     final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (item.title.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 8.0,
-              right: 8.0,
-              bottom: 4.0,
-            ),
-            child: Text(
-              item.title!,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-          ),
+        if (item.title.isNotEmpty) titleView(context),
         choiceView(context),
         if (handleControllerErrorManually && controller.hasError)
           Padding(
