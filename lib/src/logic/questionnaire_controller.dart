@@ -624,7 +624,7 @@ class QuestionnaireController {
                 )
               ];
         break;
-      case QuestionnaireItemType.boolean:
+      case QuestionnaireItemTypeEnum.boolean:
         answers = itemBundle.controller.rawValue is! bool
             ? null
             : [
@@ -632,13 +632,13 @@ class QuestionnaireController {
                     valueX: FhirBoolean(itemBundle.controller.rawValue as bool))
               ];
         break;
-      case QuestionnaireItemType.choice:
-      case QuestionnaireItemType.openChoice:
+      case QuestionnaireItemTypeEnum.choice:
+      case QuestionnaireItemTypeEnum.openChoice:
         answers = generateChoiceAnswer(itemBundle.controller.rawValue);
         break;
-      case QuestionnaireItemType.date:
-      case QuestionnaireItemType.time:
-      case QuestionnaireItemType.dateTime:
+      case QuestionnaireItemTypeEnum.date:
+      case QuestionnaireItemTypeEnum.time:
+      case QuestionnaireItemTypeEnum.dateTime:
         answers = itemBundle.controller.rawValue is! DateTime
             ? null
             : [
@@ -656,7 +656,7 @@ class QuestionnaireController {
                 )
               ];
         break;
-      case QuestionnaireItemType.quantity:
+      case QuestionnaireItemTypeEnum.quantity:
         answers = itemBundle.controller.rawValue is! Quantity ||
                 (itemBundle.controller.rawValue as Quantity).value == null
             ? null
@@ -666,7 +666,7 @@ class QuestionnaireController {
                 )
               ];
         break;
-      case QuestionnaireItemType.attachment:
+      case QuestionnaireItemTypeEnum.attachment:
         answers = itemBundle.controller.rawValue is! Attachment
             ? null
             : [
@@ -676,7 +676,7 @@ class QuestionnaireController {
               ];
         break;
 
-      case QuestionnaireItemType.group:
+      case QuestionnaireItemTypeEnum.group:
         // The answers of a group are the answers of the children
         break;
       default:
