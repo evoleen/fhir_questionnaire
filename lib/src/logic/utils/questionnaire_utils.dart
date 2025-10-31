@@ -18,7 +18,8 @@ extension FhirTimeUtils on FhirTime {
 }
 
 extension QuestionnaireItemUtils on QuestionnaireItem {
-  String? get title => text?.valueString ?? code?.firstOrNull?.title;
+  String? get title =>
+      extension_?.localize() ?? text?.valueString ?? code?.firstOrNull?.title;
 }
 
 extension QuestionnaireUtils on Questionnaire {
